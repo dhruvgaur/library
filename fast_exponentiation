@@ -1,0 +1,16 @@
+LL f(LL base, LL val){
+
+    if(base == 1 || val == 0)return 1LL;
+    if(base ==0) return 0LL;
+    LL ret = 1LL;
+    while(val > 0){
+
+        if(val %2 == 1)
+            ret = (ret * base) % 1000000007LL;
+
+        base = (base * base) % 1000000007LL;
+
+        val = val / 2LL;
+    }
+    return ret;
+}
