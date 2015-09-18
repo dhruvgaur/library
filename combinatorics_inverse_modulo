@@ -1,0 +1,19 @@
+//precalculate factorial, inverse modulo
+
+long long fa[200200],of[200200];
+
+long long pw(long long a, long long b) {
+  if (b==0) return 1LL;
+  if (b%2==1) return (a*pw(a,b-1))%md;
+  long long x=pw(a,b/2LL);
+  return (x*x)%1000000007LL;
+}
+
+long long C(long long x, long long y) {
+  return (((fa[x]*of[y])%1000000007LL)*of[x-y])%1000000007LL;
+}
+
+for (fa[0]=of[0]=i=1; i<200200; i++) {
+  fa[i]=(fa[i-1]*i)%1000000007LL;
+  of[i]=pw(fa[i],1000000007LL-2LL);
+}
