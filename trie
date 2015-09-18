@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+
+class WordDictionary {
+    int trie[10005][26],next;
+    bool isWord[10005];
+
+public:
+
+    WordDictionary(){
+        next=1;
+        for(int l=0;l<26;l++)trie[0][l]=-1;
+    }
+
+    // Adds a word into the data structure.
+    void addWord(string s) {
+        int i = 0, v = 0;
+    	while(i < s.size()){
+    		if(trie[v][(s[i])-'a'] == -1){
+    		    for(int l=0;l<26;l++)trie[next][l]=-1;
+    		    v = trie[v][(s[i++])-'a'] = next ++;
+    		}
+    		else
+    			v = trie[v][(s[i++])-'a'];
+    	}
+    	isWord[v]=true;
+
+    }
+    // Returns if the word is in the data structure. A word could
+    // contain the dot character '.' to represent any one letter.
+
+
+    bool search(string s) {
+        return search_wildcard(s,0,0);
+    }
+
+private:
+
+    bool search_wildcard(string &s,int p,int q) {
+        int i=p,v=q;
+        while(i < s.size()){
+            if(s[i]!='.'){
+                if(trie[v][s[i]-'a'] != -1){
+                v = trie[v][s[i++]-'a'];
+                }
+                else
+                    return false;
+            }else{
+                bool flag=false;
+                for(int j=0;j<26;j++){
+                    if(trie[v][j]!=-1)
+                        flag =flag||search_wildcard(s,i+1,trie[v][j]);
+
+                    if(flag)break;
+                }
+                return flag;
+            }
+
+        }
+
+        if(isWord[v])return true;
+        else return false;
+    }
+};
+
+
+
+int main(){
+
+	WordDictionary wordDictionary;
+    wordDictionary.addWord("a");
+	wordDictionary.addWord("the");
+	wordDictionary.addWord("tea");
+	wordDictionary.addWord("ten");
+
+return 0;
+}
