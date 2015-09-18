@@ -1,0 +1,33 @@
+struct node{
+    int val,index;
+};
+
+bool cmp(const node& a,const node& b){
+    return (a.val < b.val);
+}
+
+sort(data.begin(), data.end(), cmp);
+
+//passing the arguments by reference and defining them const sppeds up the 
+
+//You can use comparison function for STL containers by passing them as the first argument of the constructor, and specifying 
+//the function type as the additional template argument
+
+set<int, bool (*)(int, int)> s(cmp);
+
+----------------------------------------
+struct Edge
+{
+    int from, to, weight;
+};
+
+struct Edge
+{
+    int from, to, weight;
+    bool operator<(Edge other) const
+    {
+        return weight > other.weight;
+    }
+};
+
+
