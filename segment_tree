@@ -1,0 +1,92 @@
+//It is a a solution to Codeforces 321E
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef signed long long ll;
+
+#undef _P
+#define _P(...) (void)printf(__VA_ARGS__)
+#define FOR(x,to) for(x=0;x<to;x++)
+#define FORR(x,arr) for(auto& x:arr)
+#define ITR(x,c) for(__typeof(c.begin()) x=c.begin();x!=c.end();x++)
+#define ALL(a) (a.begin()),(a.end())
+#define ZERO(a) memset(a,0,sizeof(a))
+#define MINUS(a) memset(a,0xff,sizeof(a))
+//-------------------------------------------------------
+
+int mul=10;
+ll mo=1000000007;
+ll fact[(1<<19)+5],p[(1<<19)+5];
+
+template<int NV> class SegTree_Lazy {
+public:
+	vector<ll> val,to;
+	SegTree_Lazy(){val.resize(NV*2,0); to.resize(NV*2);};
+
+	ll getval(int x,int y,int l=0,int r=NV,int k=1) {
+		if(r<=x || y<=l) return 0;
+		if(x<=l && r<=y) return to[k];
+		
+		x=max(x,l);
+		y=min(y,r);
+		if(val[k]>=0) return val[k]*fact[y-x]%mo;
+		ll a=getval(x,y,l,(l+r)/2,k*2);
+		ll b=getval(x,y,(l+r)/2,r,k*2+1);
+		if((l+r)/2-x>=0) return (a+b*p[(l+r)/2-x])%mo;
+		return b;
+	}
+
+	void update(int x,int y,ll v,int l=0,int r=NV,int k=1) {
+		if(l>=r) return;
+		if(x<=l && r<=y) {
+			val[k]=v;
+			to[k]=fact[r-l]*v%mo;
+		}
+		else if(l < y && x < r) {
+			if(val[k]!=-1) {
+				val[k*2]=val[k*2+1]=val[k];
+				to[k*2]=to[k*2+1]=val[k]*fact[(r-l)/2]%mo;
+				val[k]=-1;
+			}
+			update(x,y,v,l,(l+r)/2,k*2);
+			update(x,y,v,(l+r)/2,r,k*2+1);
+			to[k]=(to[k*2]+to[k*2+1]*p[(r-l)/2])%mo;
+		}
+	}
+};
+
+int N,M,K;
+string S;
+SegTree_Lazy<1<<18> st;
+
+void solve() {
+	int i,j,k,l,r,x,y; string s;
+	
+	fact[0]=0;
+	p[0]=1;
+	FOR(i,1<<19) fact[i+1]=(fact[i]*mul+1)%mo,p[i+1]=p[i]*mul%mo;
+	
+	cin>>N>>M>>K;
+	cin>>S;
+	FOR(i,N) st.update(i+1,i+2,S[i]-'0');
+	M+=K;
+	while(M--) {
+		cin>>i>>l>>r>>x;
+		if(i==1) {
+			st.update(l,r+1,x);
+		}
+		else {
+			if(st.getval(l,r+1-x)==st.getval(l+x,r+1)) _P("YES\n");
+			else _P("NO\n");
+		}
+	}
+}
+
+
+int main(int argc,char** argv){
+	string s;int i;
+	if(argc==1) ios::sync_with_stdio(false);
+	FOR(i,argc-1) s+=argv[i+1],s+='\n';
+	FOR(i,s.size()) ungetc(s[s.size()-1-i],stdin);
+	solve(); return 0;
+}
