@@ -1,0 +1,14 @@
+//http://codeforces.com/blog/entry/11275
+// here BIT is considered to store values from index 0 onwards.
+int get(int x)
+    {
+        int sum=0;
+        int ret=0; // Number of element in array, for which the sum is equal to sum
+        for(int i=1<<MPOW;i && ret+(i-1)<N;i>>=1) // Loop through the powers of two, starting with the highest possible
+        {
+            if(sum+tree[ret+(i-1)]<x) // Trying to expand the current prefix
+                sum+=tree[ret+(i-1)],
+                ret+=i;
+        }
+        return ret;
+    }
