@@ -1,6 +1,6 @@
 //BIT storing values from index 1 onwards, index 0 is not used
-#define MAX 20000
-int tree[200001];
+#define MaxVal 200000
+int tree[MaxVal+1];
 
 int read(int idx){
     int sum = 0;
