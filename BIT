@@ -1,0 +1,13 @@
+//BIT storing values from index 1 onwards, index 0 is not used
+#define MAX 20000
+int tree[200001];
+
+void update(int pos , int data){
+    while(pos <= MAX){
+
+        tree[pos]+= data;
+        pos += (pos & (-pos));
+    }
+}
+
+
