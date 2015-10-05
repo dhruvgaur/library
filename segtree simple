@@ -1,0 +1,46 @@
+const int range = 100005;
+int segtree[range],A[range];
+
+
+void build(int node, int start, int end){
+	if(start == end){
+		segtree[node] = A[start];
+	}else{
+		int mid = (start + end)/2;
+		build(2*node,start,mid);
+		build(2*node+1,mid+1,end);
+		
+		segtree[node] = segtree[2*node] + segtree[2*node +1];
+	}
+	
+}
+
+int query(int node,int start,int end, int l, int r){
+	if(r < start || l > end)return 0;
+	if((l<=start && end <=r)return segtree[node];
+	
+	int mid = (start + end)/2;
+	int p1 = query(2*node ,start , mid, l, r);
+	int p2 = query(2*node +1, mid+1, end, l, r);
+	
+	return p1 + p2;	
+
+}
+
+void update(int node , int start, end, int idx,int val){
+
+	if(start == end){
+		A[start] += val;
+		segtree[node] += val;
+	}else{
+		int mid = (start + end) /2;
+		if(idx >= start && idx <= mid){
+			update(node*2,start,mid,idx,val);
+			
+		}else{
+			update(node*2+1,mid+1,end,idx,val);
+		}
+		segtree[node] = segtree[2*node] + segtree[2*node+1];
+	}
+
+}
