@@ -2,9 +2,8 @@
 using namespace std;
 vector< vector<string> > prog;
 
-void print(string temp){cout<<temp<<endl;}
-
 string keywords[]={"define","end","str","print","reverse","toupper","tolower","append_a"};
+
 map<string,vector < vector<string> > > userdefined;
 
 string rev(string temp){
@@ -17,9 +16,11 @@ string rev(string temp){
 }
 
 string toupper(string temp){
-    for(int i=0;i<temp.length();i++)
+    for(int i=0;i<temp.length();i++){
         if(isalnum(temp[i]))
-            std::toupper(temp[i]);
+            temp[i] = std::toupper(temp[i]);
+    }
+
     return temp;
 }
 
@@ -27,12 +28,54 @@ string toupper(string temp){
 string tolower(string temp){
     for(int i=0;i<temp.length();i++)
         if(isalnum(temp[i]))
-            std::tolower(temp[i]);
+            temp[i] = std::tolower(temp[i]);
+
     return temp;
 }
 
 string append(string temp){
     return temp+"a";
+}
+
+void execute(string function_name,string &temp){
+
+    if(userdefined.find(function_name)== userdefined.end()){
+        cout<<"error";
+        exit(0);
+    }
+    vector< vector<string> > fu = userdefined[function_name];
+    string fu_name;
+    for(int i=0;i<fu.size();i++){
+        stack<string> st;
+
+        for(int j=0;j<fu[i].size();j++){
+            if(fu[i][j] == "str")
+                st.push(temp);
+            else
+                st.push(fu[i][j]);
+        }
+
+        temp = st.top();
+
+        if(temp[0]=='"' || temp[temp.size()]=='"')
+            temp = temp.substr(1,temp.length()-2);
+
+        st.pop();
+        while(!st.empty()){
+            fu_name = st.top();
+            st.pop();
+
+            if(fu_name == "print"){cout<<temp<<endl;}
+            else if(fu_name =="reverse"){temp = rev(temp);}
+            else if(fu_name == "toupper"){temp = toupper(temp);}
+            else if(fu_name == "tolower"){temp = tolower(temp);}
+            else if(fu_name == "append_a"){temp = append(temp);}
+            else {
+                execute(fu_name,temp);
+            }
+        }
+
+    }
 }
 
 int main(){
@@ -87,8 +130,11 @@ int main(){
     }
 
     //interpret the command
+    string temp2 = "";
 
-    for(map<string,vector < vector<string> > >::iterator it = userdefined.begin();it != userdefined.end();++it){
+    execute("main",temp2);
+
+    /*for(map<string,vector < vector<string> > >::iterator it = userdefined.begin();it != userdefined.end();++it){
         vector< vector<string> > inp = it->second;
         for(int i=0;i<inp.size();i++){
             for(int j=0;j<inp[i].size();j++)
@@ -96,6 +142,6 @@ int main(){
             cout<<endl;
         }
     }
-
+    */
 
     return 0;}
